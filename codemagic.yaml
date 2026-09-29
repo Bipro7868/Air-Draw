@@ -6,18 +6,14 @@ workflows:
     environment:
       java: 17
     scripts:
-      - name: Download hand tracking model
-        script: mkdir -p app/src/main/assets
-          curl -fL --retry 5 --retry-all-errors \
-            --connect-timeout 30 \
-            --max-time 300 \
-            "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task" \
-            -o app/src/main/assets/hand_landmarker.task
+      - name: Check hand tracking model
+        script: |
           test -s app/src/main/assets/hand_landmarker.task
-          mkdir -p app/src/main/assets
-          curl -L --fail --retry 3 "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task" -o app/src/main/assets/hand_landmarker.task
+
       - name: Build debug APK
         script: |
-          gradle --no-daemon assembleDebug
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleDebug
+
     artifacts:
       - app/build/outputs/**/*.apk
